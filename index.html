@@ -1,0 +1,1409 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ezequiel Gomez · Creando tendencia en cada cancha</title>
+<meta name="description" content="Portafolio privado de diseño gráfico deportivo: uniformes de fútbol, béisbol, pesca, básquet y vóleibol para clubes, empresas y torneos.">
+<!-- Landing PRIVADO: se comparte por enlace, no se indexa. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Saira+Condensed:ital,wght@1,700;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DIRECCIÓN
+   Frase: «Se mueve como una transmisión: cortes secos y marcadores,
+   nada flota.»  →  tres verbos: CORTAR (máscara que se abre seca),
+   MARCAR (cifras que cuentan), BARRER (la cinta LED). Nada más.
+   Registro: técnico/archivo en carbón. El color lo pone EL TRABAJO;
+   el volt aparece como acento de señal, nunca como superficie grande
+   salvo en el bloque de contacto.
+   Zonas quietas: hero, lightbox, contacto, pie.
+   ── Revisión 2 (pedido del cliente): la página tiene que sentirse VIVA.
+   Se añade un segundo acento, el ROSA, que pinta la atmósfera (luces,
+   halos, énfasis) mientras el volt sigue marcando las ACCIONES. El fondo
+   respira: orbes de luz, focos de estadio que barren y chispas. La galería
+   pasa a filas que corren (FLOTAR) y la completa vive en un diálogo.
+   ============================================================ */
+:root{
+  --bg:#0d0e10;          /* el césped de noche */
+  --bg-2:#141619;        /* barra, dock */
+  --panel:#1b1e22;       /* fichas */
+  --panel-2:#24282d;
+  --paper:#eceae4;       /* superficie clara: proceso */
+  --ink:#0d0e10;
+
+  --text:#f2f1ec;
+  --muted:#9a9ea6;       /* 7.1:1 sobre --bg */
+  --border:#2a2e34;
+  --border-strong:#5a6069;
+
+  /* Volt: sobre carbón PINTA y ESCRIBE (15:1). Sobre papel NO escribe:
+     ahí se usa --ink y el volt solo como masa. */
+  --accent:#d4ff3a;
+  --accent-soft:color-mix(in oklab,var(--accent) 16%,transparent);
+  /* Rosa: PINTA la atmósfera y ESCRIBE énfasis grandes (5.9:1 sobre carbón). */
+  --pink:#ff2d8a;
+  --pink-2:#b81cff;
+
+  /* Una sola voz deportiva: itálica condensada de dorsal para todo lo que es título o cifra */
+  --f-display:"Saira Condensed","Arial Narrow",Impact,sans-serif;
+  /* Itálica condensada de dorsal: botones y carnet, lo que se TOCA o se LLEVA puesto */
+  --f-sport:"Saira Condensed","Arial Narrow",sans-serif;
+  --f-body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+
+  --t-tap:.14s; --t-fast:.22s; --t-mid:.40s; --t-slow:.62s;
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --ease-soft:cubic-bezier(.33,.02,.2,1);
+
+  --shell:1320px;
+  --measure:60ch;
+  --pad:clamp(16px,5vw,64px);
+  --gap:clamp(10px,1.6vw,20px);
+  --step:clamp(72px,9vw,140px);
+  --bar:64px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:var(--bar);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.55 var(--f-body);overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.shell{max-width:var(--shell);margin:0 auto;padding:0 var(--pad)}
+.rotulo{font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.display{font-family:var(--f-display);font-weight:900;font-style:italic;text-transform:uppercase;line-height:.88;letter-spacing:-.005em;margin:0}
+
+/* ---------- Barra ---------- */
+.bar{position:fixed;inset:0 0 auto;height:var(--bar);z-index:20;display:flex;align-items:center;
+  background:color-mix(in oklab,var(--bg) 82%,transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid transparent;transition:border-color var(--t-fast) var(--ease)}
+/* El filo solo existe cuando hay contenido pasando por debajo (no sobre el hero). */
+.bar.con-filo{border-bottom-color:var(--border)}
+.bar .shell{display:flex;align-items:center;gap:24px;width:100%}
+.marca{font:italic 900 22px/1 var(--f-display);text-decoration:none;letter-spacing:.02em;text-transform:uppercase}
+.marca b{color:var(--accent)}
+.bar nav{margin-left:auto;display:flex;gap:4px}
+.bar nav a{font:500 13px/1 var(--f-body);text-decoration:none;color:var(--muted);padding:15px 12px;transition:color var(--t-fast)}
+.bar nav a:hover{color:var(--text)}
+/* ---------- Botones: píldora 3D con luz trasera ----------
+   Tres capas que dicen "esto se pulsa": canto inferior (sombra sólida),
+   brillo interior arriba y un halo del mismo color detrás que respira. */
+.btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;
+  border-radius:999px;font:italic 800 18px/1 var(--f-sport);letter-spacing:.03em;text-transform:uppercase;text-decoration:none;border:0;cursor:pointer;
+  color:var(--ink);--canto:#6d8c04;--halo:rgba(212,255,58,.55);
+  background:linear-gradient(180deg,#f1ffb0 0%,var(--accent) 42%,#a6d413 100%);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.75),inset 0 -3px 0 rgba(0,0,0,.18),0 6px 0 var(--canto),0 12px 26px rgba(0,0,0,.5);
+  transition:transform var(--t-tap) var(--ease),box-shadow var(--t-tap) var(--ease),filter var(--t-fast)}
+.btn::before{content:"";position:absolute;inset:-6px -4px;border-radius:inherit;z-index:-1;background:var(--halo);filter:blur(16px);animation:halo 2.6s ease-in-out infinite}
+.btn::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%) -150% 0/250% 100% no-repeat;animation:brillo 4.5s ease-in-out infinite}
+@keyframes halo{50%{opacity:.45;scale:.94}}
+@keyframes brillo{0%,60%{background-position:-150% 0}100%{background-position:150% 0}}
+.btn:hover{transform:translateY(-3px);filter:brightness(1.08)}
+.btn:active{transform:translateY(5px);box-shadow:inset 0 2px 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(0,0,0,.18),0 1px 0 var(--canto),0 4px 10px rgba(0,0,0,.5)}
+.btn--linea{color:var(--text);--canto:rgba(0,0,0,.55);--halo:rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
+  backdrop-filter:blur(8px);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28),inset 0 2px 0 rgba(255,255,255,.25),0 6px 0 var(--canto),0 12px 26px rgba(0,0,0,.45)}
+.btn--linea:hover{--halo:rgba(255,45,138,.35)}
+.btn--negro{color:#fff;--canto:#000;--halo:rgba(0,0,0,.45);background:linear-gradient(180deg,#3a3e46,#15171b 55%,#0a0b0d)}
+
+/* ---------- Hero: la acreditación (zona quieta) ---------- */
+.hero{min-height:100svh;padding:calc(var(--bar) + 20px) 0 0;display:flex;align-items:stretch;position:relative;overflow:hidden}
+.hero .shell{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(16px,3vw,40px);align-items:end;width:100%}
+.hero .shell>div:first-child{align-self:center;padding-bottom:clamp(40px,8vh,90px);position:relative;z-index:2}
+.hero h1{font-size:clamp(3.8rem,8.6vw,9rem)}
+.hero h1 em{font-style:normal;color:var(--pink);text-shadow:0 0 40px rgba(255,45,138,.55)}
+/* Halo que sigue al cursor por la portada */
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(600px circle at var(--cx,70%) var(--cy,40%),rgba(255,45,138,.22),transparent 60%);transition:background .2s}
+/* Escenario de la cabeza: dorsal gigante, aro de luz que gira y piso de neón.
+   La cabeza se apoya en el borde inferior de la portada: está EN la escena, no flotando. */
+.mascota::before{content:"";position:absolute;inset:4% 0 18%;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle,rgba(255,45,138,.7),rgba(184,28,255,.32) 45%,transparent 70%);filter:blur(36px);animation:latir 4s ease-in-out infinite}
+.aro{position:absolute;left:50%;top:44%;width:92%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;z-index:-1;
+  background:conic-gradient(from 0deg,transparent 0 12%,var(--pink) 18%,transparent 26% 50%,var(--accent) 56%,transparent 64% 100%);
+  -webkit-mask:radial-gradient(closest-side,transparent 93%,#000 94%,#000 99%,transparent 100%);mask:radial-gradient(closest-side,transparent 93%,#000 94%,#000 99%,transparent 100%);
+  animation:girar 9s linear infinite;filter:drop-shadow(0 0 12px var(--pink))}
+.aro--2{width:74%;animation-duration:14s;animation-direction:reverse;opacity:.7}
+@keyframes girar{to{rotate:1turn}}
+.dorsal{position:absolute;left:50%;top:38%;translate:-50% -50%;z-index:-2;font:italic 900 clamp(14rem,30vw,30rem)/.8 var(--f-sport);
+  color:transparent;-webkit-text-stroke:2px rgba(255,45,138,.45);letter-spacing:-.04em;pointer-events:none;animation:latir 5s ease-in-out infinite}
+.piso{position:absolute;left:-30%;right:-30%;bottom:0;height:34%;z-index:-1;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgba(255,45,138,.5) 0 2px,transparent 2px 70px),repeating-linear-gradient(0deg,rgba(255,45,138,.5) 0 2px,transparent 2px 46px);
+  transform:perspective(380px) rotateX(62deg);transform-origin:bottom;animation:pisar 1.6s linear infinite;
+  -webkit-mask:linear-gradient(transparent,#000 70%);mask:linear-gradient(transparent,#000 70%)}
+@keyframes pisar{to{background-position:0 0,0 46px}}
+@keyframes latir{50%{opacity:.6;scale:.92}}
+.hero .bajada{max-width:44ch;color:var(--muted);font-size:clamp(16px,1.3vw,18px);margin:28px 0 32px}
+.hero .bajada strong{color:var(--text);font-weight:600}
+.acciones{display:flex;flex-wrap:wrap;gap:12px}
+
+/* ---------- Mascota: el avatar duerme hasta que llega el visitante ---------- */
+.mascota{position:relative;justify-self:center;align-self:end;width:min(100%,640px);aspect-ratio:720/851;margin:0;perspective:1100px;translate:0 var(--sy,0px)}
+.cabeza{position:absolute;inset:0;transform-style:preserve-3d;
+  transform:translate3d(var(--mx,0px),var(--my,0px),0) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg)) rotate(var(--mr,0deg)) scale(var(--ms,1));
+  transition:transform var(--t-mid) var(--ease);filter:drop-shadow(0 0 28px rgba(255,45,138,.45)) drop-shadow(0 30px 40px rgba(0,0,0,.6))}
+.mascota.despierta .cabeza{--ms:1.04}
+.cabeza img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:bottom;transition:opacity var(--t-tap) linear}
+.cabeza .despierto{opacity:0}
+.mascota.despierta .despierto{opacity:1}
+.mascota.despierta .dormido{opacity:0}
+/* Respirar es la única excepción a «nada flota»: comunica un ESTADO (dormido). */
+.mascota:not(.despierta) .cabeza{animation:respirar 3.4s var(--ease-soft) infinite}
+@keyframes respirar{0%,100%{transform:rotate(-1.5deg)}50%{transform:translateY(-8px) rotate(1.5deg) scale(1.015)}}
+.zzz{position:absolute;top:6%;right:8%;font:italic 900 clamp(34px,4vw,60px)/1 var(--f-sport);color:var(--accent);rotate:-8deg;transition:opacity var(--t-fast);text-shadow:0 0 20px rgba(212,255,58,.6);animation:zzz 2.4s ease-in-out infinite}
+@keyframes zzz{50%{translate:6px -10px;opacity:.6}}
+.zzz small{font-size:.6em}
+.mascota.despierta .zzz{opacity:0}
+/* El pase cuelga sobre el pecho de la mascota: él es el acreditado. */
+/* El carnet cuelga y se balancea */
+.mascota .pase{position:absolute;right:-4%;bottom:2%;scale:.5;transform-origin:100% 100%;rotate:8deg;z-index:3;animation:columpio 4.5s ease-in-out infinite}
+@keyframes columpio{50%{rotate:2deg}}
+
+.pase{position:relative;width:360px;background:var(--paper);color:var(--ink);
+  border-radius:14px;overflow:hidden;box-shadow:0 30px 80px -20px #000}
+/* La ranura del lanyard: el detalle que convierte una tarjeta en un pase. */
+.pase::before{content:"";position:absolute;top:12px;left:50%;translate:-50% 0;width:56px;height:10px;border-radius:6px;background:var(--bg);z-index:2}
+.pase__banda{background:linear-gradient(115deg,var(--accent) 0 64%,var(--pink) 64% 72%,var(--accent) 72% 78%,var(--pink) 78% 82%,var(--accent) 82%);padding:34px 20px 14px;display:flex;justify-content:space-between;align-items:end}
+.pase__banda span{font:italic 900 34px/.85 var(--f-sport);text-transform:uppercase}
+.pase__banda small{font:600 10px/1.2 var(--f-mono);letter-spacing:.1em;text-align:right}
+.pase__cuerpo{padding:18px 20px;display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.pase__num{display:grid;place-items:center;aspect-ratio:3/4;border-radius:8px;background:linear-gradient(160deg,var(--ink),#2b0d1d);color:var(--pink);font:italic 900 74px/1 var(--f-sport);letter-spacing:-.04em;text-shadow:0 0 18px rgba(255,45,138,.6);box-shadow:inset 0 0 0 2px rgba(255,45,138,.5)}
+.pase__num small{display:block;font-size:11px;letter-spacing:.2em;color:var(--accent);text-shadow:none;margin-top:-8px}
+.pase__foto{aspect-ratio:3/4;background:#cfccc3 center/cover;border-radius:6px;position:relative;overflow:hidden}
+/* La misma imagen del collage, encuadrada en la cara: escala desde el punto del rostro. */
+.pase__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;scale:1.75;transform-origin:50% 44%}
+.pase__foto::after{content:"FOTO";position:absolute;inset:0;display:grid;place-items:center;font:600 10px var(--f-mono);letter-spacing:.14em;color:#8b877c;z-index:-1}
+.pase dl{margin:0;display:grid;gap:10px}
+.pase dt{font:600 9px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#6d6a62}
+.pase dd{margin:3px 0 0;font:italic 800 20px/1 var(--f-sport);text-transform:uppercase;letter-spacing:.01em}
+.pase dd.para{font-size:26px;background:var(--ink);color:var(--accent);display:inline-block;padding:4px 8px 3px;margin-top:5px}
+.pase__pie{border-top:1px dashed #b9b5aa;margin:0 20px;padding:14px 0 18px;display:flex;align-items:end;justify-content:space-between;gap:16px}
+.codigo{height:38px;flex:1;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px,var(--ink) 8px 11px,transparent 11px 12px)}
+.pase__pie span{font:600 10px var(--f-mono);letter-spacing:.08em}
+
+.scroll-hint{position:absolute;left:var(--pad);bottom:20px}
+
+/* ---------- Cinta LED (BARRER) ---------- */
+.cinta{background:var(--accent);color:var(--ink);overflow:hidden;padding:14px 0;border-block:1px solid #000}
+.cinta__pista{display:flex;width:max-content;animation:barrer 38s linear infinite}
+.cinta span{font:italic 900 clamp(22px,2.6vw,34px)/1 var(--f-display);text-transform:uppercase;white-space:nowrap;padding-right:28px}
+.cinta span::after{content:"●";font-size:.5em;vertical-align:middle;margin-left:28px}
+@keyframes barrer{to{translate:-50% 0}}
+
+/* ---------- Secciones ---------- */
+section{padding:var(--step) 0}
+.cabecera{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:20px 40px;margin-bottom:clamp(28px,4vw,52px)}
+.cabecera h2{font-size:clamp(3rem,7.5vw,7rem)}
+.cabecera p{max-width:42ch;color:var(--muted);margin:0}
+
+/* CORTAR: la máscara se abre de abajo arriba, seca. Se observa el contenedor,
+   nunca el elemento enmascarado (un clip-path total no "está en pantalla"). */
+.cortar>*{clip-path:inset(0 -14% 100% -14%);transition:clip-path var(--t-slow) var(--ease)}
+.cortar.dentro>*{clip-path:inset(-14% -14% -14% -14%)}
+
+/* ---------- Vestuario: el perchero ----------
+   PRESENTAR: la camiseta colgada de lado gira de frente y le cae la luz.
+   Es el único giro del sitio y existe porque reproduce un gesto real:
+   sacar una camiseta del perchero para enseñarla. */
+.vestuario{background:radial-gradient(ellipse 60% 55% at 50% 0%,rgba(255,45,138,.20) 0%,transparent 70%);overflow:hidden;padding-bottom:clamp(48px,6vw,90px)}
+.perchero{position:relative;padding-top:30px}
+.barra-perchero{position:absolute;left:var(--pad);right:var(--pad);top:30px;height:7px;border-radius:4px;
+  background:linear-gradient(#a3a8ae,#4a4f55 60%,#2b2f34);box-shadow:0 8px 18px rgba(0,0,0,.65)}
+.rack{list-style:none;margin:0;padding:0 var(--pad);display:flex;justify-content:center}
+.camiseta{--w:clamp(150px,14.5vw,240px);flex:none;width:var(--w);margin-inline:calc(var(--w)*-.21);position:relative;perspective:900px;z-index:1}
+.camiseta.activa{z-index:10}
+.camiseta button{all:unset;display:block;position:relative;cursor:pointer;padding-top:44px;transform-origin:50% 0;
+  transform:rotateY(58deg);filter:brightness(.38) saturate(.5);
+  transition:transform var(--t-slow) var(--ease),filter var(--t-slow) var(--ease)}
+.camiseta button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.camiseta img{width:100%;height:auto;display:block;filter:drop-shadow(0 24px 22px rgba(0,0,0,.55))}
+/* La percha: gancho sobre la barra + varilla hasta el cuello */
+.gancho{position:absolute;left:50%;top:-10px;width:2px;height:58px;background:#9aa0a7;translate:-50% 0}
+.gancho::before{content:"";position:absolute;left:-7px;top:-12px;width:16px;height:16px;border:2px solid #9aa0a7;border-radius:50%;border-bottom-color:transparent;border-left-color:transparent;rotate:-45deg}
+.camiseta.activa button{transform:rotateY(0) translateZ(70px) scale(1.14);filter:none}
+/* El foco: un cono de luz cálida que solo existe sobre la camiseta activa */
+.camiseta::before{content:"";position:absolute;left:50%;top:-30px;width:300%;height:150%;translate:-50% 0;pointer-events:none;z-index:-1;
+  background:radial-gradient(ellipse 30% 70% at 50% 0%,rgba(255,248,225,.20),transparent 72%);opacity:0;transition:opacity var(--t-slow) var(--ease)}
+.camiseta.activa::before{opacity:1}
+.camiseta::after{content:"";position:absolute;left:10%;right:10%;bottom:-26px;height:18px;border-radius:50%;background:radial-gradient(rgba(0,0,0,.7),transparent 70%);opacity:0;transition:opacity var(--t-slow)}
+.camiseta.activa::after{opacity:1}
+.vest-info{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:6px 18px;margin-top:clamp(40px,5vw,70px);text-align:center}
+.vest-info strong{font:italic 900 clamp(2rem,4vw,3.4rem)/.9 var(--f-display);text-transform:uppercase}
+.vest-pista{text-align:center;margin-top:14px}
+
+/* ---------- Maniquíes: banda a sangre ---------- */
+.maniquies{padding:0}
+.banda-m{display:grid;grid-template-columns:repeat(4,1fr)}
+.banda-m img{width:100%;height:100%;aspect-ratio:3/4;object-fit:cover}
+.maniquies .shell{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:18px}
+
+/* ---------- Temporada: filtros + rejilla ---------- */
+.filtros{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.filtros button{min-height:44px;padding:0 18px;border-radius:999px;background:transparent;color:var(--muted);border:1px solid var(--border-strong);
+  font:600 13px/1 var(--f-body);cursor:pointer;transition:color var(--t-fast),background var(--t-fast),border-color var(--t-fast)}
+.filtros button:hover{color:var(--text);border-color:var(--text)}
+.filtros button[aria-pressed="true"]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.filtros button sup{font:500 10px var(--f-mono);margin-left:4px;opacity:.7}
+
+.rejilla{columns:3 280px;column-gap:var(--gap)}
+.pieza{margin:0 0 var(--gap);position:relative;break-inside:avoid;background:var(--panel);cursor:pointer}
+.pieza[hidden]{display:none}
+.pieza>img{width:100%;height:auto;display:block}
+.pieza button{all:unset;position:absolute;inset:0;z-index:3;cursor:pointer}
+.pieza button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.pieza figcaption{padding:12px 14px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pieza figcaption strong{display:block;font:italic 800 clamp(18px,1.5vw,22px)/1 var(--f-display);text-transform:uppercase;letter-spacing:.01em;margin-top:6px}
+/* Un solo gesto de hover para todo el sitio: el filo volt se TRAZA abajo. */
+.pieza::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--accent);z-index:4;transform:scaleX(0);transform-origin:left;transition:transform var(--t-mid) var(--ease)}
+@media (hover:hover){.pieza:hover::after{transform:scaleX(1)}}
+/* En táctil no hay hover: el filo está siempre trazado a medias como señal de "pulsable". */
+@media (hover:none){.pieza::after{transform:scaleX(.18)}}
+
+/* ---------- Marcador (MARCAR) ---------- */
+.marcador{background:color-mix(in oklab,var(--bg-2) 72%,transparent);backdrop-filter:blur(6px);border-block:1px solid var(--border)}
+.dato:nth-child(even) b{color:var(--pink);text-shadow:0 0 34px rgba(255,45,138,.45)}
+.dato:nth-child(odd) b{text-shadow:0 0 34px rgba(212,255,58,.3)}
+.marcador .tablero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--border)}
+.dato{padding:clamp(16px,3vw,40px);border-right:1px solid var(--border);container-type:inline-size}
+.dato:last-child{border-right:0}
+/* 🐛 «+10.000» a tamaño fijo no cabía en su columna y ensanchaba la página en móvil.
+   El tamaño sale del ancho de la casilla (cqi): la cifra más larga llena ~90%. */
+.dato b{display:block;font:italic 900 min(8.5rem,29cqi)/.85 var(--f-display);font-variant-numeric:tabular-nums;color:var(--accent)}
+.dato span{display:block;margin-top:14px;color:var(--muted);max-width:22ch}
+
+/* ---------- El capitán ---------- */
+.capitan{padding-top:0}
+.capitan__foto{margin:0;position:relative}
+.capitan__foto{overflow:hidden}
+.capitan__foto img{width:100%;height:auto;aspect-ratio:1672/941;object-fit:cover;animation:acercar 18s ease-in-out infinite alternate}
+@keyframes acercar{to{scale:1.07}}
+/* Borde inferior rasgado: recoge el papel roto de su propio collage. */
+.capitan__foto::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:clamp(18px,2.4vw,34px);background:var(--bg);
+  clip-path:polygon(0 60%,4% 20%,9% 70%,14% 30%,20% 75%,26% 25%,31% 65%,37% 15%,43% 70%,49% 35%,55% 80%,61% 20%,67% 60%,72% 30%,78% 75%,84% 25%,90% 65%,95% 30%,100% 55%,100% 100%,0 100%)}
+.capitan__texto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,80px);padding-top:clamp(36px,5vw,64px);align-items:start}
+.capitan h2{font-size:clamp(3rem,7.5vw,7rem);margin-top:14px}
+.capitan__bio{font-size:clamp(17px,1.5vw,20px);max-width:var(--measure);margin:0 0 28px}
+.capitan__bio strong{color:var(--accent);font-weight:600}
+.ficha{margin:0;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border)}
+.ficha div{padding:16px 16px 16px 0;border-bottom:1px solid var(--border)}
+.ficha dt{font:500 10px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ficha dd{margin:6px 0 0;font:italic 800 20px/1.05 var(--f-display);text-transform:uppercase}
+
+/* ---------- Proceso (superficie clara: corte seco) ---------- */
+/* ---------- Cómo trabajo: 4 pasos que se encienden ----------
+   Una pista de luz une los pasos y se llena a medida que aparecen. */
+.proceso{position:relative;background:linear-gradient(180deg,transparent,rgba(255,45,138,.08) 50%,transparent)}
+.proceso h2 em{font-style:inherit;color:var(--pink);text-shadow:0 0 34px rgba(255,45,138,.55)}
+.pasos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(14px,2vw,24px);position:relative}
+.pasos::before,.pasos::after{content:"";position:absolute;left:5%;top:58px;height:4px;border-radius:4px}
+.pasos::before{right:5%;background:rgba(255,255,255,.08)}
+.pasos::after{width:calc(90% * var(--avance,0));background:linear-gradient(90deg,var(--pink),var(--accent));box-shadow:0 0 18px var(--pink);transition:width .7s var(--ease)}
+.paso{position:relative;z-index:1;padding:24px 22px 26px;border-radius:24px;
+  background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(6px);
+  opacity:.35;transform:translateY(28px) scale(.96);transition:opacity .6s var(--ease),transform .6s var(--ease),border-color .4s,box-shadow .4s}
+.paso.encendido{opacity:1;transform:none;border-color:rgba(255,45,138,.5);box-shadow:0 0 0 1px rgba(255,45,138,.2),0 24px 60px rgba(255,45,138,.16)}
+.paso__n{display:grid;place-items:center;width:72px;height:72px;border-radius:50%;margin-bottom:20px;
+  font:italic 900 36px/1 var(--f-display);color:var(--ink);background:radial-gradient(circle at 35% 30%,#fbffd8 0,var(--accent) 42%,#8fb80d);
+  box-shadow:0 6px 0 #5f7a05,0 0 32px rgba(212,255,58,.5)}
+.paso:nth-child(even) .paso__n{color:#fff;background:radial-gradient(circle at 35% 30%,#ffd1e6 0,var(--pink) 45%,#b0105e);box-shadow:0 6px 0 #7d0b43,0 0 32px rgba(255,45,138,.6)}
+.paso.encendido .paso__n{animation:latir 2.6s ease-in-out infinite}
+.paso__ico{position:absolute;top:26px;right:22px;width:36px;height:36px;color:var(--pink);opacity:.85}
+.paso:nth-child(odd) .paso__ico{color:var(--accent)}
+.paso h3{font:italic 900 clamp(1.8rem,2.4vw,2.4rem)/.95 var(--f-display);text-transform:uppercase;margin:0 0 10px}
+.paso p{margin:0 0 18px;color:#c3c6cc}
+.paso__tag{display:inline-block;font:500 10px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08)}
+@media (hover:hover){.paso.encendido:hover{transform:translateY(-8px);border-color:var(--accent);box-shadow:0 0 0 1px rgba(212,255,58,.3),0 30px 70px rgba(212,255,58,.14)}}
+.pasos-cta{display:flex;justify-content:center;margin-top:clamp(36px,4vw,56px)}
+
+/* ---------- Clientes ---------- */
+.clientes ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));border-top:1px solid var(--border)}
+.clientes li{padding:22px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-right:20px}
+.clientes li strong{font:italic 800 clamp(22px,2.2vw,30px)/1 var(--f-display);text-transform:uppercase}
+
+/* ---------- Fichaje (contacto · zona quieta) ---------- */
+.fichaje{position:relative;overflow:hidden;background:radial-gradient(ellipse 70% 80% at 85% 100%,rgba(212,255,58,.12),transparent 60%),radial-gradient(ellipse 60% 70% at 0% 0%,rgba(255,45,138,.14),transparent 60%),color-mix(in oklab,var(--bg-2) 85%,transparent);border-top:1px solid var(--border)}
+.fichaje h2 em{font-style:inherit;color:var(--accent);text-shadow:0 0 40px rgba(212,255,58,.45)}
+.fichaje p strong{color:var(--text)}
+@keyframes ondear{to{background-position:100% 50%}}
+.fichaje h2{font-size:clamp(4rem,13vw,13rem)}
+.fichaje p{font-size:clamp(17px,1.5vw,20px);max-width:52ch;margin:26px 0 32px;color:#c3c6cc}
+
+
+
+footer{padding:28px 0 calc(28px + env(safe-area-inset-bottom));color:var(--muted)}
+footer .shell{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+
+/* ---------- Lightbox ---------- */
+dialog{border:0;padding:0;background:transparent;color:var(--text);max-width:none;max-height:none;width:100%;height:100%}
+dialog::backdrop{background:rgba(5,6,7,.94)}
+.visor{height:100%;display:grid;grid-template-rows:auto 1fr auto;padding:16px var(--pad) calc(16px + env(safe-area-inset-bottom))}
+.visor__top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.visor__img{min-height:0;display:grid;place-items:center;padding:14px 0}
+.visor__img img{max-width:min(100%,1400px);max-height:calc(100svh - 190px);width:auto;height:auto;object-fit:contain}
+.visor__pie{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:14px}
+.visor__pie h3{font:italic 900 clamp(28px,4vw,48px)/.9 var(--f-display);text-transform:uppercase;margin:6px 0 0}
+.visor__pie p{margin:8px 0 0;color:var(--muted);max-width:60ch}
+.icono{min-width:44px;min-height:44px;border-radius:50%;display:inline-grid;place-items:center;background:var(--panel);color:var(--text);border:1px solid var(--border-strong);font:600 18px var(--f-body);cursor:pointer}
+.icono:hover{border-color:var(--text)}
+.visor__nav{display:flex;gap:8px}
+
+
+/* ---------- Ambiente: el fondo respira ---------- */
+.ambiente{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.orbe{position:absolute;border-radius:50%;will-change:transform}
+.orbe--1{width:60vmax;height:60vmax;left:-20vmax;top:-22vmax;background:radial-gradient(circle,rgba(255,45,138,.38),transparent 62%);animation:deriva1 24s ease-in-out infinite alternate}
+.orbe--2{width:55vmax;height:55vmax;right:-22vmax;top:20vh;background:radial-gradient(circle,rgba(184,28,255,.42),transparent 62%);animation:deriva2 30s ease-in-out infinite alternate}
+.orbe--3{width:45vmax;height:45vmax;left:25vw;bottom:-25vmax;background:radial-gradient(circle,rgba(212,255,58,.2),transparent 62%);animation:deriva3 26s ease-in-out infinite alternate}
+@keyframes deriva1{to{transform:translate(18vw,22vh) scale(1.15)}}
+@keyframes deriva2{to{transform:translate(-22vw,-14vh) scale(.9)}}
+@keyframes deriva3{to{transform:translate(-14vw,-20vh) scale(1.2)}}
+/* Focos de estadio que barren desde arriba */
+.foco{position:absolute;top:-30vh;width:22vw;min-width:160px;height:150vh;transform-origin:50% 0;
+  background:linear-gradient(rgba(255,255,255,.16),rgba(255,45,138,.10) 40%,transparent 75%);clip-path:polygon(42% 0,58% 0,100% 100%,0 100%);filter:blur(8px)}
+.foco--a{left:8vw;animation:barrido 13s ease-in-out infinite alternate}
+.foco--b{right:8vw;animation:barrido 16s ease-in-out infinite alternate-reverse}
+@keyframes barrido{from{rotate:-22deg}to{rotate:22deg}}
+.orbe--4{width:40vmax;height:40vmax;right:-10vmax;bottom:-12vmax;background:radial-gradient(circle,rgba(255,45,138,.26),transparent 62%);animation:deriva1 19s ease-in-out infinite alternate-reverse}
+.foco--c{left:44vw;animation:barrido 11s ease-in-out infinite alternate;opacity:.7}
+/* Lámparas de estadio que titilan arriba */
+.lamparas{position:absolute;top:2vh;display:grid;grid-template-columns:repeat(4,10px);gap:10px}
+.lamparas--i{left:4vw;rotate:-12deg}.lamparas--d{right:4vw;rotate:12deg}
+.lamparas i{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff,0 0 30px rgba(255,45,138,.9);animation:titilar 2.2s ease-in-out infinite}
+.lamparas i:nth-child(3n){animation-delay:-.7s}.lamparas i:nth-child(4n){animation-delay:-1.4s}
+@keyframes titilar{50%{opacity:.35}}
+/* Rayos de velocidad que cruzan la pantalla */
+.rayo{position:absolute;left:0;top:var(--y);width:40vw;height:2px;background:linear-gradient(90deg,transparent,var(--c,var(--pink)),transparent);
+  rotate:-14deg;opacity:0;animation:rayo var(--d,7s) linear infinite;animation-delay:var(--r,0s);filter:drop-shadow(0 0 6px var(--c,var(--pink)))}
+@keyframes rayo{0%{transform:translateX(-50vw);opacity:0}8%{opacity:.9}30%{transform:translateX(150vw);opacity:0}100%{transform:translateX(150vw);opacity:0}}
+/* Chispas que suben */
+.chispa{position:absolute;bottom:-10px;left:var(--x);width:var(--t,4px);height:var(--t,4px);border-radius:50%;
+  background:var(--c,var(--pink));box-shadow:0 0 10px var(--c,var(--pink));animation:subir var(--d,14s) linear infinite;animation-delay:var(--r,0s);opacity:0}
+@keyframes subir{10%{opacity:.9}90%{opacity:.6}to{transform:translate(var(--w,30px),-110vh);opacity:0}}
+.grano{position:absolute;inset:-50%;opacity:.06;mix-blend-mode:overlay;animation:grano .8s steps(3) infinite;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+@keyframes grano{33%{transform:translate(-3%,2%)}66%{transform:translate(2%,-3%)}}
+/* Barra de progreso de lectura */
+.progreso{position:fixed;top:0;left:0;right:0;height:3px;z-index:40;background:linear-gradient(90deg,var(--pink),var(--accent));transform-origin:left;transform:scaleX(0)}
+@supports (animation-timeline:scroll()){.progreso{animation:progreso linear both;animation-timeline:scroll(root)}}
+@keyframes progreso{to{transform:scaleX(1)}}
+
+/* ---------- Botón lateral fijo: siempre sabes dónde escribirme ---------- */
+.lateral{position:fixed;right:0;top:50%;z-index:35;translate:0 -50%;display:flex;align-items:center;gap:12px;isolation:isolate;
+  writing-mode:vertical-rl;rotate:180deg;padding:26px 14px;border-radius:0 22px 22px 0;
+  background:linear-gradient(90deg,#c8126c,var(--pink) 45%,#ff7ab8);color:#fff;text-decoration:none;
+  font:italic 900 21px/1 var(--f-sport);letter-spacing:.06em;text-transform:uppercase;text-shadow:0 2px 0 rgba(0,0,0,.25);
+  box-shadow:inset 2px 0 0 rgba(255,255,255,.45),inset -4px 0 0 rgba(0,0,0,.2),-5px 0 0 #8e0d4c,0 0 0 0 rgba(255,45,138,.7);
+  animation:llamar 2s ease-out infinite,sacudir 6s ease-in-out 3s infinite;transition:padding var(--t-fast) var(--ease)}
+.lateral::before{content:"";position:absolute;inset:-14px -10px;z-index:-1;border-radius:inherit;background:radial-gradient(closest-side,rgba(255,45,138,.75),transparent);filter:blur(10px);animation:halo 2s ease-in-out infinite}
+.lateral::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(15deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%) 0 -150%/100% 250% no-repeat;animation:brilloV 3.5s ease-in-out infinite}
+@keyframes brilloV{0%,55%{background-position:0 -150%}100%{background-position:0 150%}}
+@keyframes sacudir{0%,86%,100%{translate:0 -50%}88%{translate:-6px -50%}90%{translate:0 -50%}92%{translate:-6px -50%}94%{translate:0 -50%}}
+.lateral:hover{padding-block:34px}
+.lateral .punto{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:halo 1.2s ease-in-out infinite;flex:none}
+.lateral svg{width:24px;height:24px;rotate:90deg;flex:none}
+/* Sobre el bloque rosa de contacto el botón se invierte para no desaparecer */
+
+@keyframes llamar{0%{box-shadow:0 0 0 0 rgba(255,45,138,.65)}100%{box-shadow:0 0 0 18px rgba(255,45,138,0)}}
+
+/* ---------- Galería: filas que corren ---------- */
+.carrusel{display:grid;gap:14px;margin-top:8px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.fila{overflow:hidden;padding-block:10px}
+.fila__pista{display:flex;gap:14px;width:max-content;animation:correr var(--dur,70s) linear infinite}
+.fila.reves .fila__pista{animation-direction:reverse}
+.fila:hover .fila__pista{animation-play-state:paused}
+@keyframes correr{to{transform:translateX(calc(-50% - 7px))}}
+.tile{all:unset;position:relative;flex:none;height:var(--alto,clamp(150px,17vw,230px));cursor:pointer;border-radius:10px;overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform var(--t-mid) var(--ease),box-shadow var(--t-mid) var(--ease)}
+.tile:nth-child(3n+1){animation:flotar 6s ease-in-out infinite}
+.tile:nth-child(3n+2){animation:flotar 7.5s ease-in-out -2s infinite}
+@keyframes flotar{50%{translate:0 -8px}}
+.tile img{height:100%;width:auto;display:block}
+.tile::after{content:attr(data-t);position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;font:italic 800 16px/1 var(--f-display);text-transform:uppercase;
+  background:linear-gradient(transparent,rgba(0,0,0,.85));opacity:0;transition:opacity var(--t-fast)}
+.tile:hover,.tile:focus-visible{transform:scale(1.07);z-index:2;box-shadow:0 0 0 2px var(--pink),0 0 40px rgba(255,45,138,.55)}
+.tile:hover::after,.tile:focus-visible::after{opacity:1}
+.galeria-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px 24px;margin-top:clamp(28px,4vw,48px);text-align:center}
+.btn--grande{min-height:62px;padding:0 36px;font-size:21px}
+.btn--rosa{color:#fff;--canto:#8e0d4c;--halo:rgba(255,45,138,.65);background:linear-gradient(180deg,#ff8cc4 0%,var(--pink) 45%,#c8126c 100%)}
+
+/* Galería completa en diálogo */
+dialog.galeria{background:var(--bg);overflow:auto;overscroll-behavior:contain}
+dialog.galeria::backdrop{background:rgba(5,6,7,.9)}
+.galeria__top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-block:16px;background:color-mix(in oklab,var(--bg) 88%,transparent);backdrop-filter:blur(10px)}
+.galeria__top h2{font-size:clamp(2.4rem,6vw,4.5rem)}
+.galeria__cuerpo{padding-bottom:60px}
+
+/* ---------- Dock móvil ---------- */
+.dock{display:none}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .hero .shell{grid-template-columns:1fr}
+  .mascota{justify-self:center;width:min(100%,520px)}
+  .hero .shell>div:first-child{padding-bottom:0}
+  .banda-m{grid-template-columns:repeat(2,1fr)}
+  .marcador .tablero{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dato:nth-child(2){border-right:0}
+  .dato:nth-child(-n+2){border-bottom:1px solid var(--border)}
+  .pasos{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pasos::before,.pasos::after{display:none}
+}
+@media (max-width:760px){
+  .bar nav,.bar .btn{display:none}
+  .hero{padding-top:calc(var(--bar) + 12px);align-items:start}
+  .hero h1{font-size:clamp(3.6rem,19vw,6rem)}
+  .scroll-hint{display:none}
+  .mascota{width:100%;max-width:440px}
+  .mascota .pase{scale:.4;right:-6%;bottom:0}
+  .hero h1{font-size:clamp(3.4rem,17vw,5.4rem)}
+  .rejilla{columns:2 150px}
+  .btn--grande{font-size:17px;padding:0 22px;min-height:56px}
+  .carrusel{--alto:150px;gap:8px}
+  .lateral{font-size:16px;padding:18px 10px;gap:9px}
+  .lateral svg{width:19px;height:19px}
+  .pieza figcaption{padding:10px}
+  .pieza figcaption strong{font-size:17px}
+  .pieza figcaption .rotulo{font-size:9px;letter-spacing:.06em;line-height:1.35;display:block}
+  /* En el teléfono el perchero se desliza: la camiseta del centro es la que sale a la luz */
+  .rack{justify-content:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+    padding:0 calc(50% - var(--w)/2) 40px}
+  .rack::-webkit-scrollbar{display:none}
+  .camiseta{--w:56vw;margin-inline:calc(var(--w)*-.2);scroll-snap-align:center}
+  .pasos{grid-template-columns:1fr}
+  .capitan__texto{grid-template-columns:1fr}
+  .capitan__foto img{aspect-ratio:4/5;object-position:50% 42%}
+  .dock{display:flex;position:fixed;z-index:20;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));
+    background:var(--bg-2);border:1px solid var(--border-strong);padding:6px;gap:6px}
+  .dock a{flex:1;min-height:48px;display:grid;place-items:center;font:600 13px var(--f-body);text-decoration:none;color:var(--text)}
+  /* 🐛 .dock a pisaba el color del .btn y el texto volt-sobre-volt desaparecía. */
+  .dock a.btn{flex:1.3;padding:0;color:var(--ink);min-height:48px;font-size:16px}
+  .dock{border-radius:999px;padding:6px 6px}
+  footer{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .cortar>*{clip-path:none}
+  .fila{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<div class="ambiente" aria-hidden="true">
+  <span class="orbe orbe--1"></span><span class="orbe orbe--2"></span><span class="orbe orbe--3"></span>
+  <span class="orbe orbe--4"></span>
+  <span class="foco foco--a"></span><span class="foco foco--b"></span><span class="foco foco--c"></span>
+  <span class="lamparas lamparas--i"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+  <span class="lamparas lamparas--d"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+  <span class="rayo" style="--y:18%;--d:7s;--r:-1s"></span><span class="rayo" style="--y:42%;--d:9s;--r:-4s;--c:var(--accent)"></span>
+  <span class="rayo" style="--y:63%;--d:8s;--r:-6s"></span><span class="rayo" style="--y:81%;--d:11s;--r:-2s;--c:var(--pink-2)"></span>
+  <span class="chispa" style="--x:6%;--d:16s;--r:-2s"></span><span class="chispa" style="--x:14%;--d:12s;--r:-7s;--c:var(--accent);--t:3px"></span>
+  <span class="chispa" style="--x:23%;--d:18s;--r:-11s;--w:-40px"></span><span class="chispa" style="--x:31%;--d:14s;--r:-4s;--t:6px"></span>
+  <span class="chispa" style="--x:42%;--d:20s;--r:-15s;--c:var(--pink-2)"></span><span class="chispa" style="--x:51%;--d:13s;--r:-1s;--c:var(--accent);--t:3px"></span>
+  <span class="chispa" style="--x:60%;--d:17s;--r:-9s;--w:-20px"></span><span class="chispa" style="--x:68%;--d:15s;--r:-5s;--t:5px"></span>
+  <span class="chispa" style="--x:77%;--d:19s;--r:-13s;--c:var(--pink-2)"></span><span class="chispa" style="--x:85%;--d:12s;--r:-3s;--c:var(--accent);--t:3px"></span>
+  <span class="chispa" style="--x:93%;--d:16s;--r:-8s;--w:-50px"></span><span class="chispa" style="--x:47%;--d:22s;--r:-18s;--t:7px"></span>
+  <span class="grano"></span>
+</div>
+<div class="progreso" aria-hidden="true"></div>
+<a class="lateral" href="https://wa.me/50768750714?text=Hola%20Ezequiel%2C%20vi%20tu%20portafolio%20y%20quiero%20cotizar%20uniformes" rel="noopener" target="_blank" aria-label="Escríbeme por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2l-.5-.3Z"/></svg>
+  ¡Escríbeme!<span class="punto" aria-hidden="true"></span>
+</a>
+
+<header class="bar" id="bar">
+  <div class="shell">
+    <a class="marca" href="#inicio">EZEQUIEL<b>/</b>GOMEZ</a>
+    <nav aria-label="Secciones">
+      <a href="#vestuario">Vestuario</a>
+      <a href="#temporada">Galería</a>
+      <a href="#capitan">Sobre mí</a>
+      <a href="#proceso">Cómo trabajo</a>
+      <a href="#clientes">Clientes</a>
+    </nav>
+    <a class="btn" href="#fichaje">Cotizar</a>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO · la acreditación ============ -->
+<section class="hero" id="inicio">
+  <div class="shell">
+    <div>
+      <p class="rotulo">Portafolio privado · Temporada 2026</p>
+      <h1 class="display">creando<br>tendencia<br><em>en cada cancha.</em></h1>
+      <p class="bajada">Más de 600 equipos en Panamá ya salieron a la cancha con mis diseños. Fútbol, béisbol, vóleibol, pesca y básquet, sublimado full color.
+        <strong>Si tu equipo va a estrenar, que estrene algo que nadie más en la liga tenga.</strong></p>
+      <div class="acciones">
+        <a class="btn" href="#vestuario">Entrar al vestuario →</a>
+        <a class="btn btn--rosa" href="#fichaje">Cotiza al toque</a>
+      </div>
+    </div>
+
+    <div class="mascota" id="mascota">
+    <span class="dorsal" aria-hidden="true">10</span>
+    <span class="aro" aria-hidden="true"></span><span class="aro aro--2" aria-hidden="true"></span>
+    <div class="cabeza" aria-hidden="true">
+      <img class="dormido" src="img/avatar-dormido.webp" alt="" width="720" height="851" fetchpriority="high">
+      <img class="despierto" src="img/avatar-despierto.webp" alt="" width="720" height="851">
+    </div>
+    <span class="zzz" aria-hidden="true">z<small>z</small>z</span>
+    <article class="pase" aria-label="Acreditación de acceso">
+      <div class="pase__banda">
+        <span>Acceso<br>total</span>
+        <small>MEDIA PASS<br>2026 · Nº <span id="serie">0001</span></small>
+      </div>
+      <div class="pase__cuerpo">
+        <div class="pase__num" aria-hidden="true"><span>10<small>EG</small></span></div>
+        <dl>
+          <div><dt>Diseñador</dt><dd>Ezequiel Gomez</dd></div>
+          <div><dt>Rol</dt><dd>Diseño gráfico deportivo</dd></div>
+          <div><dt>Acceso para</dt><dd class="para" id="para">Invitado</dd></div>
+        </dl>
+      </div>
+      <div class="pase__pie">
+        <div class="codigo" aria-hidden="true"></div>
+        <span>ZONA · ALL AREAS</span>
+      </div>
+    </article>
+    </div>
+  </div>
+  <div class="piso" aria-hidden="true"></div>
+  <p class="rotulo scroll-hint">↓ Desliza</p>
+</section>
+
+<!-- ============ Cinta LED ============ -->
+<div class="cinta" aria-hidden="true">
+  <div class="cinta__pista">
+    <span>Hecho en Panamá</span><span>Fútbol</span><span>Béisbol</span><span>Vóleibol</span><span>Pesca</span><span>Básquet</span><span>Sublimado full color</span><span>Del barrio a la liga</span>
+    <span>Hecho en Panamá</span><span>Fútbol</span><span>Béisbol</span><span>Vóleibol</span><span>Pesca</span><span>Básquet</span><span>Sublimado full color</span><span>Del barrio a la liga</span>
+  </div>
+</div>
+
+<!-- ============ Vestuario ============ -->
+<section class="vestuario" id="vestuario" aria-labelledby="vest-titulo">
+  <div class="shell cabecera">
+    <div class="cortar"><h2 class="display" id="vest-titulo">el vestuario</h2></div>
+    <p>Pasa al vestuario. Pon el cursor encima de una camiseta y sale a la luz. Tócala para verla completa, de frente y de espalda.</p>
+  </div>
+  <div class="perchero">
+    <div class="barra-perchero" aria-hidden="true"></div>
+    <ul class="rack" id="rack">
+      <li class="camiseta" data-id="1" data-t="Cerro Cama FC" data-c="Fútbol · Hakeem Cuadra">
+        <button type="button" aria-label="Ver uniforme Cerro Cama FC"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/1.webp" alt="Camiseta Cerro Cama FC" width="526" height="760" loading="lazy" decoding="async"></button>
+      </li>
+      <li class="camiseta" data-id="117" data-t="Batboee" data-c="Fútbol · Senafront">
+        <button type="button" aria-label="Ver uniforme Batboee"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/117.webp" alt="Camiseta Batboee" width="529" height="760" loading="lazy" decoding="async"></button>
+      </li>
+      <li class="camiseta" data-id="124" data-t="Los Renacidos" data-c="Fútbol · Aníbal Murillo">
+        <button type="button" aria-label="Ver uniforme Los Renacidos"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/124.webp" alt="Camiseta Los Renacidos" width="519" height="659" loading="lazy" decoding="async"></button>
+      </li>
+      <li class="camiseta" data-id="129" data-t="San José" data-c="Fútbol · Elisa Pitty">
+        <button type="button" aria-label="Ver uniforme San José"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/129.webp" alt="Camiseta San José" width="516" height="735" loading="lazy" decoding="async"></button>
+      </li>
+      <li class="camiseta" data-id="144" data-t="Verde salvaje" data-c="Fútbol · Daniel Aldeano">
+        <button type="button" aria-label="Ver uniforme Verde salvaje"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/144.webp" alt="Camiseta Verde salvaje" width="515" height="760" loading="lazy" decoding="async"></button>
+      </li>
+      <li class="camiseta" data-id="17" data-t="Alfa" data-c="Fútbol · Jonathan Muñoz">
+        <button type="button" aria-label="Ver uniforme Alfa"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/17.webp" alt="Camiseta Alfa" width="514" height="735" loading="lazy" decoding="async"></button>
+      </li>
+      <li class="camiseta" data-id="57" data-t="Más que amigos" data-c="Fútbol · Kiko Valdez">
+        <button type="button" aria-label="Ver uniforme Más que amigos"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/57.webp" alt="Camiseta Más que amigos" width="490" height="710" loading="lazy" decoding="async"></button>
+      </li>
+      <li class="camiseta" data-id="50" data-t="La Tropa" data-c="Fútbol · Rubén Rodríguez">
+        <button type="button" aria-label="Ver uniforme La Tropa"><span class="gancho" aria-hidden="true"></span><img src="img/vestuario/50.webp" alt="Camiseta La Tropa" width="531" height="760" loading="lazy" decoding="async"></button>
+      </li>
+    </ul>
+  </div>
+  <div class="shell">
+    <div class="vest-info" aria-live="polite">
+      <span class="rotulo" id="vest-n">01 / 08</span>
+      <strong id="vest-t"></strong>
+      <span class="rotulo" id="vest-c"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Galería ============ -->
+<section id="temporada" aria-labelledby="gal-t">
+  <div class="shell">
+    <div class="cabecera">
+      <div class="cortar"><h2 class="display" id="gal-t">la galería</h2></div>
+      <p>Diseños reales, hechos en Panamá para clubes, empresas y torneos. Pasa el mouse por encima para frenarlos y toca el que te guste.</p>
+    </div>
+  </div>
+  <div class="carrusel" id="carrusel"></div>
+  <div class="shell galeria-cta">
+    <button class="btn btn--grande" type="button" id="abrir-galeria">Ver toda la galería · <span id="total-g">68</span> diseños →</button>
+    <a class="btn btn--linea" href="#fichaje">Quiero uno así</a>
+  </div>
+</section>
+
+<!-- ============ Maniquíes ============ -->
+<section class="maniquies" aria-label="Presentaciones en maniquí">
+  <div class="banda-m"><img src="img/maniqui/21.webp" alt="Uniforme presentado en maniquí 3D" width="1000" height="1333" loading="lazy" decoding="async"><img src="img/maniqui/29.webp" alt="Uniforme presentado en maniquí 3D" width="1000" height="1333" loading="lazy" decoding="async"><img src="img/maniqui/67.webp" alt="Uniforme presentado en maniquí 3D" width="1000" height="1333" loading="lazy" decoding="async"><img src="img/maniqui/121.webp" alt="Uniforme presentado en maniquí 3D" width="1000" height="1333" loading="lazy" decoding="async"></div>
+  <div class="shell"><span class="rotulo">Presentaciones 3D · maniquí</span><span class="rotulo">Tu equipo ve el uniforme puesto antes de mandarlo a hacer</span></div>
+</section>
+
+<!-- ============ Marcador ============ -->
+<section class="marcador" id="marcador">
+  <div class="shell">
+    <div class="cabecera">
+      <div class="cortar"><h2 class="display">el marcador</h2></div>
+      <p>Los números no mienten.</p>
+    </div>
+    <div class="tablero">
+      <div class="dato"><b data-contar="6">0</b><span>años diseñando uniformes deportivos</span></div>
+      <div class="dato"><b data-contar="600" data-mas>0</b><span>clientes: clubes, empresas y torneos</span></div>
+      <div class="dato"><b data-contar="10000" data-mas>0</b><span>prendas hechas y entregadas</span></div>
+      <div class="dato"><b data-contar="6">0</b><span>deportes: fútbol, béisbol, pesca, básquet, vóleibol y pádel</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ El capitán (sobre mí) ============ -->
+<section class="capitan" id="capitan" aria-labelledby="capitan-t">
+  <figure class="capitan__foto">
+    <img src="img/yo.webp" alt="Ezequiel Gomez, diseñador de uniformes deportivos" width="1672" height="941" loading="lazy">
+  </figure>
+  <div class="shell capitan__texto">
+    <div>
+      <p class="rotulo">El capitán · Nº 10 · Hecho en Panamá</p>
+      <div class="cortar"><h2 class="display" id="capitan-t">detrás del<br>diseño.</h2></div>
+    </div>
+    <div>
+      <p class="capitan__bio">Soy <strong>Ezequiel Gomez</strong>. Llevo 6 años diseñando uniformes para equipos de barrio, ligas, empresas y torneos en todo Panamá. Mi meta es simple: que tu equipo entre a la cancha y todo el mundo pregunte <strong>quién les hizo la camiseta</strong>.</p>
+      <dl class="ficha">
+        <div><dt>Posición</dt><dd>Diseño gráfico deportivo</dd></div>
+        <div><dt>Especialidad</dt><dd>Uniformes sublimados</dd></div>
+        <div><dt>Base</dt><dd>Panamá</dd></div>
+        <div><dt>Herramientas</dt><dd>Photoshop · Illustrator</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Proceso (corte seco a papel) ============ -->
+<section class="proceso" id="proceso" aria-labelledby="proc-t">
+  <div class="shell">
+    <div class="cabecera">
+      <div>
+        <p class="rotulo">Cómo trabajo</p>
+        <div class="cortar"><h2 class="display" id="proc-t">tu uniforme<br>en <em>4 pasos</em></h2></div>
+      </div>
+      <p>Del primer mensaje al día del estreno, sin enredos. Tú pones el equipo, yo pongo el diseño.</p>
+    </div>
+    <ol class="pasos" id="pasos">
+      <li class="paso"><span class="paso__n">1</span><svg class="paso__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H8l-4 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><h3>Me escribes</h3><p>Por WhatsApp me cuentas los colores, el escudo, los patrocinadores y los nombres y números.</p><span class="paso__tag">Por WhatsApp</span></li>
+      <li class="paso"><span class="paso__n">2</span><svg class="paso__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3 3 6l2 5 3-1v11h8V10l3 1 2-5-5-3a4 4 0 0 1-8 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><h3>Te diseño la propuesta</h3><p>Te mando el mockup de frente, espalda y short para que el equipo lo vea antes de decidir.</p><span class="paso__tag">Frente · espalda · short</span></li>
+      <li class="paso"><span class="paso__n">3</span><svg class="paso__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg><h3>Ajustamos juntos</h3><p>Cambiamos lo que haga falta hasta que el equipo diga «¡esa es!».</p><span class="paso__tag">Hasta que te encante</span></li>
+      <li class="paso"><span class="paso__n">4</span><svg class="paso__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0Z M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>Sales a estrenar</h3><p>Te entrego los archivos listos para sublimar y tu equipo sale a la cancha con algo que nadie más tiene.</p><span class="paso__tag">Listo para sublimar</span></li>
+    </ol>
+    <div class="pasos-cta"><a class="btn btn--rosa btn--grande" href="https://wa.me/50768750714?text=Hola%20Ezequiel%2C%20vi%20tu%20portafolio%20y%20quiero%20cotizar%20uniformes" rel="noopener" target="_blank">Empezar con el paso 1 →</a></div>
+  </div>
+</section>
+
+<!-- ============ Clientes ============ -->
+<section class="clientes" id="clientes">
+  <div class="shell">
+    <div class="cabecera">
+      <div class="cortar"><h2 class="display">han confiado</h2></div>
+      <p>Equipos y empresas que ya estrenaron conmigo. El próximo puede ser el tuyo.</p>
+    </div>
+    <ul>
+      <li><strong>Petróleos Delta</strong><span class="rotulo">Empresa</span></li>
+      <li><strong>Volt Energy Drink</strong><span class="rotulo">Empresa</span></li>
+      <li><strong>Empresa Bocasa</strong><span class="rotulo">Béisbol</span></li>
+      <li><strong>Corimar</strong><span class="rotulo">Pesca</span></li>
+      <li><strong>Boho Food Town</strong><span class="rotulo">Empresa</span></li>
+      <li><strong>Mind Production</strong><span class="rotulo">Empresa</span></li>
+      <li><strong>SJSS FC</strong><span class="rotulo">Fútbol</span></li>
+      <li><strong>Mybox Lion FC</strong><span class="rotulo">Fútbol</span></li>
+      <li><strong>Senafront</strong><span class="rotulo">Fútbol</span></li>
+      <li><strong>Polo Truck</strong><span class="rotulo">Empresa</span></li>
+      <li><strong>Agencias Celmar</strong><span class="rotulo">Empresa</span></li>
+      <li><strong>Orthocare</strong><span class="rotulo">Básquet</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ Fichaje ============ -->
+<section class="fichaje" id="fichaje">
+  <div class="shell">
+    <p class="rotulo">Contacto · Cotizaciones</p>
+    <h2 class="display">trabaja<br><em>conmigo.</em></h2>
+    <p>Cuéntame de tu equipo, empresa o torneo: cuántas prendas, los colores y para qué fecha. Te respondo en menos de 24 horas. <strong>Juntos hacemos el uniforme del que todos van a hablar en la liga.</strong></p>
+    <div class="acciones">
+      <a class="btn btn--grande" href="https://wa.me/50768750714?text=Hola%20Ezequiel%2C%20vi%20tu%20portafolio%20y%20quiero%20cotizar%20uniformes" rel="noopener" target="_blank">Escríbeme por WhatsApp →</a>
+      <a class="btn btn--linea" href="mailto:eiker0405@gmail.com?subject=Uniformes%20para%20mi%20equipo">Correo</a>
+      <a class="btn btn--linea" href="https://www.instagram.com/eegomezzzz/" rel="noopener" target="_blank">Instagram</a>
+    </div>
+    <p class="rotulo" style="margin-top:22px;text-transform:none;letter-spacing:.06em;font-size:13px">eiker0405@gmail.com · +507 6875-0714 · @eegomezzzz</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="shell">
+    <span class="rotulo">© 2026 Ezequiel Gomez · Diseño gráfico deportivo</span>
+    <span class="rotulo">Enlace privado · No compartir</span>
+  </div>
+</footer>
+
+<nav class="dock" aria-label="Accesos rápidos">
+  <a href="#vestuario">Vestuario</a>
+  <a href="#temporada">Galería</a>
+  <a class="btn" href="#fichaje">Cotizar</a>
+</nav>
+
+
+<dialog id="galeria" class="galeria" aria-labelledby="galeria-t">
+  <div class="galeria__top shell">
+    <h2 class="display" id="galeria-t">toda la galería</h2>
+    <div class="acciones">
+      <a class="btn btn--rosa" href="https://wa.me/50768750714?text=Hola%20Ezequiel%2C%20vi%20tu%20galer%C3%ADa%20y%20quiero%20cotizar" rel="noopener" target="_blank">Cotizar</a>
+      <button class="icono" type="button" data-cerrar-g aria-label="Cerrar galería">✕</button>
+    </div>
+  </div>
+  <div class="shell galeria__cuerpo">
+    <div class="filtros" role="group" aria-label="Filtrar por categoría">
+      <button type="button" aria-pressed="true" data-filtro="todo">Todo</button>
+      <button type="button" aria-pressed="false" data-filtro="futbol">Fútbol</button>
+      <button type="button" aria-pressed="false" data-filtro="beisbol">Béisbol</button>
+      <button type="button" aria-pressed="false" data-filtro="basquet">Básquet</button>
+      <button type="button" aria-pressed="false" data-filtro="voleibol">Vóleibol</button>
+      <button type="button" aria-pressed="false" data-filtro="pesca">Pesca</button>
+      <button type="button" aria-pressed="false" data-filtro="empresas">Empresas</button>
+      <button type="button" aria-pressed="false" data-filtro="coleccion">Colecciones</button>
+      <button type="button" aria-pressed="false" data-filtro="redes">Redes</button>
+    </div>
+
+    <!-- PARA AÑADIR UNA PIEZA: copia un <figure>, cambia data-cat (futbol, beisbol,
+         pesca, basquet, empresas, redes), el título y las rutas de imagen
+         (img/obra/ID-t.webp = miniatura, img/obra/ID.webp = grande). -->
+    <div class="rejilla" id="rejilla">
+      <figure class="pieza" data-cat="futbol" data-id="fresh-v">
+        <img src="img/obra/fresh-v-t.webp" alt="Fresh Athletic · Visitante: propuesta de uniforme" width="760" height="969" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport × Iter</span><strong>Fresh Athletic · Visitante</strong></div></figcaption>
+        <button type="button" aria-label="Ver Fresh Athletic · Visitante" data-full="img/obra/fresh-v.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="n4">
+        <img src="img/obra/n4-t.webp" alt="Panamá · Estrellas: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Panamá · Estrellas</strong></div></figcaption>
+        <button type="button" aria-label="Ver Panamá · Estrellas" data-full="img/obra/n4.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="angel">
+        <img src="img/obra/angel-t.webp" alt="Ángel 22: propuesta de uniforme" width="760" height="969" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Ángel 22</strong></div></figcaption>
+        <button type="button" aria-label="Ver Ángel 22" data-full="img/obra/angel.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="voleibol" data-id="thunder">
+        <img src="img/obra/thunder-t.webp" alt="Thunder Corredor: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Vóleibol · MB Graphics</span><strong>Thunder Corredor</strong></div></figcaption>
+        <button type="button" aria-label="Ver Thunder Corredor" data-full="img/obra/thunder.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="iter-jaguar">
+        <img src="img/obra/iter-jaguar-t.webp" alt="Iter · Jaguar: propuesta de uniforme" width="760" height="532" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Merch Iter</span><strong>Iter · Jaguar</strong></div></figcaption>
+        <button type="button" aria-label="Ver Iter · Jaguar" data-full="img/obra/iter-jaguar.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n9">
+        <img src="img/obra/n9-t.webp" alt="El Naza · Oro: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NM02</span><strong>El Naza · Oro</strong></div></figcaption>
+        <button type="button" aria-label="Ver El Naza · Oro" data-full="img/obra/n9.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="ferxxo">
+        <img src="img/obra/ferxxo-t.webp" alt="Ferxxo 10: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Ferxxo 10</strong></div></figcaption>
+        <button type="button" aria-label="Ver Ferxxo 10" data-full="img/obra/ferxxo.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="asofolk">
+        <img src="img/obra/asofolk-t.webp" alt="Asociación Folklórica: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · Marcelino García</span><strong>Asociación Folklórica</strong></div></figcaption>
+        <button type="button" aria-label="Ver Asociación Folklórica" data-full="img/obra/asofolk.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="semm">
+        <img src="img/obra/semm-t.webp" alt="SEMM: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Unidos también salvamos vidas</span><strong>SEMM</strong></div></figcaption>
+        <button type="button" aria-label="Ver SEMM" data-full="img/obra/semm.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="voleibol" data-id="pride">
+        <img src="img/obra/pride-t.webp" alt="The Pride: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Vóleibol · MB Graphics</span><strong>The Pride</strong></div></figcaption>
+        <button type="button" aria-label="Ver The Pride" data-full="img/obra/pride.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="n5">
+        <img src="img/obra/n5-t.webp" alt="Panamá · Raíces: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Panamá · Raíces</strong></div></figcaption>
+        <button type="button" aria-label="Ver Panamá · Raíces" data-full="img/obra/n5.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="dozake">
+        <img src="img/obra/dozake-t.webp" alt="Dozaké Puru: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · MB Graphics</span><strong>Dozaké Puru</strong></div></figcaption>
+        <button type="button" aria-label="Ver Dozaké Puru" data-full="img/obra/dozake.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="fresh-l">
+        <img src="img/obra/fresh-l-t.webp" alt="Fresh Athletic · Local: propuesta de uniforme" width="760" height="969" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport × Iter</span><strong>Fresh Athletic · Local</strong></div></figcaption>
+        <button type="button" aria-label="Ver Fresh Athletic · Local" data-full="img/obra/fresh-l.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n11">
+        <img src="img/obra/n11-t.webp" alt="El Nazareno · Negro: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NB01</span><strong>El Nazareno · Negro</strong></div></figcaption>
+        <button type="button" aria-label="Ver El Nazareno · Negro" data-full="img/obra/n11.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="odonto">
+        <img src="img/obra/odonto-t.webp" alt="Odontólogos 22: propuesta de uniforme" width="760" height="1124" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · MB Graphics</span><strong>Odontólogos 22</strong></div></figcaption>
+        <button type="button" aria-label="Ver Odontólogos 22" data-full="img/obra/odonto.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="peto">
+        <img src="img/obra/peto-t.webp" alt="Peto amarillo: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Peto amarillo</strong></div></figcaption>
+        <button type="button" aria-label="Ver Peto amarillo" data-full="img/obra/peto.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="iter-polo">
+        <img src="img/obra/iter-polo-t.webp" alt="Iter · Keep Building: propuesta de uniforme" width="760" height="532" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Merch Iter</span><strong>Iter · Keep Building</strong></div></figcaption>
+        <button type="button" aria-label="Ver Iter · Keep Building" data-full="img/obra/iter-polo.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n14">
+        <img src="img/obra/n14-t.webp" alt="¿Quién vive? ¡El Naza!: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NB05</span><strong>¿Quién vive? ¡El Naza!</strong></div></figcaption>
+        <button type="button" aria-label="Ver ¿Quién vive? ¡El Naza!" data-full="img/obra/n14.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="vidaverde">
+        <img src="img/obra/vidaverde-t.webp" alt="Vida Verde FC: propuesta de uniforme" width="760" height="969" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Vida Verde FC</strong></div></figcaption>
+        <button type="button" aria-label="Ver Vida Verde FC" data-full="img/obra/vidaverde.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="llamas">
+        <img src="img/obra/llamas-t.webp" alt="Peto llamas: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Peto llamas</strong></div></figcaption>
+        <button type="button" aria-label="Ver Peto llamas" data-full="img/obra/llamas.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="n6">
+        <img src="img/obra/n6-t.webp" alt="Panamá · Clásica: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>Panamá · Clásica</strong></div></figcaption>
+        <button type="button" aria-label="Ver Panamá · Clásica" data-full="img/obra/n6.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="iter-flores">
+        <img src="img/obra/iter-flores-t.webp" alt="Iter · Flores: propuesta de uniforme" width="760" height="532" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Merch Iter</span><strong>Iter · Flores</strong></div></figcaption>
+        <button type="button" aria-label="Ver Iter · Flores" data-full="img/obra/iter-flores.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n8">
+        <img src="img/obra/n8-t.webp" alt="El Naza · Morado: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NM01</span><strong>El Naza · Morado</strong></div></figcaption>
+        <button type="button" aria-label="Ver El Naza · Morado" data-full="img/obra/n8.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="n7">
+        <img src="img/obra/n7-t.webp" alt="LA Galaxy: propuesta de uniforme" width="760" height="980" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elite Sport</span><strong>LA Galaxy</strong></div></figcaption>
+        <button type="button" aria-label="Ver LA Galaxy" data-full="img/obra/n7.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n10">
+        <img src="img/obra/n10-t.webp" alt="El Naza · Rojo: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NM03</span><strong>El Naza · Rojo</strong></div></figcaption>
+        <button type="button" aria-label="Ver El Naza · Rojo" data-full="img/obra/n10.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n12">
+        <img src="img/obra/n12-t.webp" alt="El Nazareno · Rojo: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NB02</span><strong>El Nazareno · Rojo</strong></div></figcaption>
+        <button type="button" aria-label="Ver El Nazareno · Rojo" data-full="img/obra/n12.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n13">
+        <img src="img/obra/n13-t.webp" alt="Por fe y devoción: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NB03</span><strong>Por fe y devoción</strong></div></figcaption>
+        <button type="button" aria-label="Ver Por fe y devoción" data-full="img/obra/n13.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="coleccion" data-id="n15">
+        <img src="img/obra/n15-t.webp" alt="Por fe · Morado: propuesta de uniforme" width="760" height="758" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Colecciones · MB Textil · NB04</span><strong>Por fe · Morado</strong></div></figcaption>
+        <button type="button" aria-label="Ver Por fe · Morado" data-full="img/obra/n15.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="1">
+        <img src="img/obra/1-t.webp" alt="Cerro Cama FC: propuesta de uniforme" width="760" height="484" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Hakeem Cuadra</span><strong>Cerro Cama FC</strong></div></figcaption>
+        <button type="button" aria-label="Ver Cerro Cama FC" data-full="img/obra/1.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="13">
+        <img src="img/obra/13-t.webp" alt="Dragón 05: propuesta de uniforme" width="760" height="722" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · My Box RRHH</span><strong>Dragón 05</strong></div></figcaption>
+        <button type="button" aria-label="Ver Dragón 05" data-full="img/obra/13.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="124">
+        <img src="img/obra/124-t.webp" alt="Los Renacidos: propuesta de uniforme" width="760" height="444" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Aníbal Murillo</span><strong>Los Renacidos</strong></div></figcaption>
+        <button type="button" aria-label="Ver Los Renacidos" data-full="img/obra/124.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="17">
+        <img src="img/obra/17-t.webp" alt="Alfa: propuesta de uniforme" width="760" height="499" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Jonathan Muñoz</span><strong>Alfa</strong></div></figcaption>
+        <button type="button" aria-label="Ver Alfa" data-full="img/obra/17.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="88">
+        <img src="img/obra/88-t.webp" alt="En la cancha: propuesta de uniforme" width="760" height="1013" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Uniforme en uso</span><strong>En la cancha</strong></div></figcaption>
+        <button type="button" aria-label="Ver En la cancha" data-full="img/obra/88.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="117">
+        <img src="img/obra/117-t.webp" alt="Batboee: propuesta de uniforme" width="760" height="484" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Senafront</span><strong>Batboee</strong></div></figcaption>
+        <button type="button" aria-label="Ver Batboee" data-full="img/obra/117.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="125">
+        <img src="img/obra/125-t.webp" alt="León rojo: propuesta de uniforme" width="760" height="659" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Luis Gaitán</span><strong>León rojo</strong></div></figcaption>
+        <button type="button" aria-label="Ver León rojo" data-full="img/obra/125.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="71">
+        <img src="img/obra/71-t.webp" alt="SJSS FC: propuesta de uniforme" width="760" height="719" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Rachel Obregón</span><strong>SJSS FC</strong></div></figcaption>
+        <button type="button" aria-label="Ver SJSS FC" data-full="img/obra/71.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="57">
+        <img src="img/obra/57-t.webp" alt="Más que amigos: propuesta de uniforme" width="760" height="484" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Kiko Valdez</span><strong>Más que amigos</strong></div></figcaption>
+        <button type="button" aria-label="Ver Más que amigos" data-full="img/obra/57.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="129">
+        <img src="img/obra/129-t.webp" alt="San José: propuesta de uniforme" width="760" height="499" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Elisa Pitty</span><strong>San José</strong></div></figcaption>
+        <button type="button" aria-label="Ver San José" data-full="img/obra/129.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="53">
+        <img src="img/obra/53-t.webp" alt="Mulog: propuesta de uniforme" width="760" height="672" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Edgar Bosquez</span><strong>Mulog</strong></div></figcaption>
+        <button type="button" aria-label="Ver Mulog" data-full="img/obra/53.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="144">
+        <img src="img/obra/144-t.webp" alt="Verde salvaje: propuesta de uniforme" width="760" height="499" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Daniel Aldeano</span><strong>Verde salvaje</strong></div></figcaption>
+        <button type="button" aria-label="Ver Verde salvaje" data-full="img/obra/144.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="63">
+        <img src="img/obra/63-t.webp" alt="Mybox Lion FC: propuesta de uniforme" width="760" height="484" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Mybox Lion FC</span><strong>Mybox Lion FC</strong></div></figcaption>
+        <button type="button" aria-label="Ver Mybox Lion FC" data-full="img/obra/63.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="50">
+        <img src="img/obra/50-t.webp" alt="La Tropa: propuesta de uniforme" width="760" height="499" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Rubén Rodríguez</span><strong>La Tropa</strong></div></figcaption>
+        <button type="button" aria-label="Ver La Tropa" data-full="img/obra/50.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="111">
+        <img src="img/obra/111-t.webp" alt="Blanco y oro: propuesta de uniforme" width="760" height="499" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Francisco Murillo</span><strong>Blanco y oro</strong></div></figcaption>
+        <button type="button" aria-label="Ver Blanco y oro" data-full="img/obra/111.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="futbol" data-id="22">
+        <img src="img/obra/22-t.webp" alt="Prestige: propuesta de uniforme" width="760" height="719" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Fútbol · Massiel Flores</span><strong>Prestige</strong></div></figcaption>
+        <button type="button" aria-label="Ver Prestige" data-full="img/obra/22.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="beisbol" data-id="4">
+        <img src="img/obra/4-t.webp" alt="Bocasa: propuesta de uniforme" width="760" height="722" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Béisbol · Empresa Bocasa</span><strong>Bocasa</strong></div></figcaption>
+        <button type="button" aria-label="Ver Bocasa" data-full="img/obra/4.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="beisbol" data-id="61">
+        <img src="img/obra/61-t.webp" alt="Bocasa rojo: propuesta de uniforme" width="760" height="721" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Béisbol · María · Empresa Bocasa</span><strong>Bocasa rojo</strong></div></figcaption>
+        <button type="button" aria-label="Ver Bocasa rojo" data-full="img/obra/61.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="beisbol" data-id="103">
+        <img src="img/obra/103-t.webp" alt="Los Temibles: propuesta de uniforme" width="760" height="748" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Béisbol · Domingo Centeno</span><strong>Los Temibles</strong></div></figcaption>
+        <button type="button" aria-label="Ver Los Temibles" data-full="img/obra/103.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="beisbol" data-id="136">
+        <img src="img/obra/136-t.webp" alt="Caimitillo: propuesta de uniforme" width="760" height="748" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Béisbol · Massiel Flores</span><strong>Caimitillo</strong></div></figcaption>
+        <button type="button" aria-label="Ver Caimitillo" data-full="img/obra/136.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="beisbol" data-id="120">
+        <img src="img/obra/120-t.webp" alt="Los Valeros: propuesta de uniforme" width="760" height="722" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Béisbol · Rudy Waller</span><strong>Los Valeros</strong></div></figcaption>
+        <button type="button" aria-label="Ver Los Valeros" data-full="img/obra/120.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="pesca" data-id="10">
+        <img src="img/obra/10-t.webp" alt="Hoodie de pesca: propuesta de uniforme" width="760" height="738" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Pesca · Vicente Martínez</span><strong>Hoodie de pesca</strong></div></figcaption>
+        <button type="button" aria-label="Ver Hoodie de pesca" data-full="img/obra/10.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="pesca" data-id="20">
+        <img src="img/obra/20-t.webp" alt="Punta Banco: propuesta de uniforme" width="760" height="737" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Pesca · Teodolinda Batista</span><strong>Punta Banco</strong></div></figcaption>
+        <button type="button" aria-label="Ver Punta Banco" data-full="img/obra/20.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="pesca" data-id="105">
+        <img src="img/obra/105-t.webp" alt="Capitán Tomás Wong: propuesta de uniforme" width="760" height="738" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Pesca · Tomás Wong</span><strong>Capitán Tomás Wong</strong></div></figcaption>
+        <button type="button" aria-label="Ver Capitán Tomás Wong" data-full="img/obra/105.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="pesca" data-id="146">
+        <img src="img/obra/146-t.webp" alt="Torneo de pesca: propuesta de uniforme" width="760" height="738" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Pesca · Ileana Sánchez</span><strong>Torneo de pesca</strong></div></figcaption>
+        <button type="button" aria-label="Ver Torneo de pesca" data-full="img/obra/146.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="pesca" data-id="145">
+        <img src="img/obra/145-t.webp" alt="Cébaco Corimar: propuesta de uniforme" width="760" height="626" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Pesca · Corimar Home</span><strong>Cébaco Corimar</strong></div></figcaption>
+        <button type="button" aria-label="Ver Cébaco Corimar" data-full="img/obra/145.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="pesca" data-id="44">
+        <img src="img/obra/44-t.webp" alt="Corimar hoodie: propuesta de uniforme" width="760" height="605" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Pesca · Corimar</span><strong>Corimar hoodie</strong></div></figcaption>
+        <button type="button" aria-label="Ver Corimar hoodie" data-full="img/obra/44.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="basquet" data-id="107">
+        <img src="img/obra/107-t.webp" alt="Orthocare 23: propuesta de uniforme" width="760" height="529" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Básquet · Orthocare</span><strong>Orthocare 23</strong></div></figcaption>
+        <button type="button" aria-label="Ver Orthocare 23" data-full="img/obra/107.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="basquet" data-id="142">
+        <img src="img/obra/142-t.webp" alt="Copa Flor Díaz: propuesta de uniforme" width="760" height="522" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Básquet · Scheyla Ortega</span><strong>Copa Flor Díaz</strong></div></figcaption>
+        <button type="button" aria-label="Ver Copa Flor Díaz" data-full="img/obra/142.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="30">
+        <img src="img/obra/30-t.webp" alt="¡Energía al máximo!: propuesta de uniforme" width="760" height="738" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Petróleos Delta</span><strong>¡Energía al máximo!</strong></div></figcaption>
+        <button type="button" aria-label="Ver ¡Energía al máximo!" data-full="img/obra/30.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="138">
+        <img src="img/obra/138-t.webp" alt="Volt: propuesta de uniforme" width="760" height="738" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Volt Energy Drink</span><strong>Volt</strong></div></figcaption>
+        <button type="button" aria-label="Ver Volt" data-full="img/obra/138.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="48">
+        <img src="img/obra/48-t.webp" alt="Car Wash: propuesta de uniforme" width="760" height="728" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Boho Food Town</span><strong>Car Wash</strong></div></figcaption>
+        <button type="button" aria-label="Ver Car Wash" data-full="img/obra/48.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="76">
+        <img src="img/obra/76-t.webp" alt="Polo Truck: propuesta de uniforme" width="760" height="719" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Polo Truck</span><strong>Polo Truck</strong></div></figcaption>
+        <button type="button" aria-label="Ver Polo Truck" data-full="img/obra/76.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="23">
+        <img src="img/obra/23-t.webp" alt="Mind Production: propuesta de uniforme" width="760" height="727" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Mind Production</span><strong>Mind Production</strong></div></figcaption>
+        <button type="button" aria-label="Ver Mind Production" data-full="img/obra/23.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="empresas" data-id="31">
+        <img src="img/obra/31-t.webp" alt="Pádel Therapy: propuesta de uniforme" width="760" height="728" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Empresas · Laura de Sanctis</span><strong>Pádel Therapy</strong></div></figcaption>
+        <button type="button" aria-label="Ver Pádel Therapy" data-full="img/obra/31.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="redes" data-id="41">
+        <img src="img/obra/41-t.webp" alt="Somos los más rápidos: propuesta de uniforme" width="760" height="918" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Redes · MB Textil</span><strong>Somos los más rápidos</strong></div></figcaption>
+        <button type="button" aria-label="Ver Somos los más rápidos" data-full="img/obra/41.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="redes" data-id="130">
+        <img src="img/obra/130-t.webp" alt="El Hogar: propuesta de uniforme" width="760" height="919" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Redes · MB Textil</span><strong>El Hogar</strong></div></figcaption>
+        <button type="button" aria-label="Ver El Hogar" data-full="img/obra/130.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="redes" data-id="93">
+        <img src="img/obra/93-t.webp" alt="Marisol Medina 12: propuesta de uniforme" width="760" height="924" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Redes · MB Textil</span><strong>Marisol Medina 12</strong></div></figcaption>
+        <button type="button" aria-label="Ver Marisol Medina 12" data-full="img/obra/93.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="redes" data-id="98">
+        <img src="img/obra/98-t.webp" alt="Stars 45: propuesta de uniforme" width="760" height="967" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Redes · ELITE</span><strong>Stars 45</strong></div></figcaption>
+        <button type="button" aria-label="Ver Stars 45" data-full="img/obra/98.webp"></button>
+      </figure>
+      <figure class="pieza" data-cat="redes" data-id="106">
+        <img src="img/obra/106-t.webp" alt="Vida Verde: propuesta de uniforme" width="760" height="968" loading="lazy" decoding="async">
+        <figcaption><div><span class="rotulo">Redes · ELITE</span><strong>Vida Verde</strong></div></figcaption>
+        <button type="button" aria-label="Ver Vida Verde" data-full="img/obra/106.webp"></button>
+      </figure>
+    </div>
+  </div>
+</dialog>
+<dialog id="visor" aria-label="Pieza ampliada">
+  <div class="visor">
+    <div class="visor__top">
+      <span class="rotulo" id="v-cuenta">01 / 09</span>
+      <button class="icono" type="button" data-cerrar aria-label="Cerrar">✕</button>
+    </div>
+    <div class="visor__img" id="v-img"></div>
+    <div class="visor__pie">
+      <div>
+        <span class="rotulo" id="v-cat"></span>
+        <h3 id="v-titulo"></h3>
+        <p id="v-desc"></p>
+      </div>
+      <div class="visor__nav">
+        <button class="icono" type="button" data-paso="-1" aria-label="Anterior">←</button>
+        <button class="icono" type="button" data-paso="1" aria-label="Siguiente">→</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  // --- Acreditación personalizada: ?para=Nombre del cliente ---
+  // Solo se pinta como texto (textContent), nunca como HTML.
+  const q = new URLSearchParams(location.search);
+  const para = (q.get("para") || "").trim().slice(0, 28);
+  if (para) document.getElementById("para").textContent = para;
+  // Nº de serie estable por cliente: el mismo enlace siempre da el mismo número.
+  let h = 7; for (const c of (para || "invitado")) h = (h * 31 + c.charCodeAt(0)) % 9973;
+  document.getElementById("serie").textContent = String(h).padStart(4, "0");
+
+  // --- Filo de la barra: solo cuando el hero ya pasó ---
+  const bar = document.getElementById("bar");
+  const hero = document.getElementById("inicio");
+  new IntersectionObserver(([e]) => bar.classList.toggle("con-filo", !e.isIntersecting),
+    { rootMargin: "-64px 0px 0px 0px" }).observe(hero);
+
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // --- Halo de la portada: sigue al cursor ---
+  const heroEl = document.getElementById("inicio");
+  heroEl.addEventListener("pointermove", (e) => {
+    const r = heroEl.getBoundingClientRect();
+    heroEl.style.setProperty("--cx", (e.clientX - r.left) + "px");
+    heroEl.style.setProperty("--cy", (e.clientY - r.top) + "px");
+  }, { passive: true });
+
+  // --- Mascota: duerme; el cursor la despierta y lo sigue con la cabeza ---
+  const masc = document.getElementById("mascota");
+  const cab = masc.querySelector(".cabeza");
+  let siesta;
+  const despertar = (ms = 2600) => {
+    masc.classList.add("despierta");
+    clearTimeout(siesta);
+    siesta = setTimeout(() => {
+      masc.classList.remove("despierta");
+      ["--mx", "--my", "--mr", "--rx", "--ry"].forEach((v) => cab.style.removeProperty(v));
+    }, ms);
+  };
+  if (quieto) {
+    masc.classList.add("despierta"); // estado final, sin seguimiento
+  } else {
+    // Se mide en el momento del evento: si el aparato cambia de modo de entrada, sigue valiendo.
+    let pedido = false, ev;
+    hero.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse") return;
+      ev = e; despertar();
+      if (pedido) return; pedido = true;
+      requestAnimationFrame(() => {
+        pedido = false;
+        const r = cab.getBoundingClientRect();
+        const dx = Math.max(-1, Math.min(1, (ev.clientX - (r.left + r.width / 2)) / (innerWidth / 2)));
+        const dy = Math.max(-1, Math.min(1, (ev.clientY - (r.top + r.height / 2)) / (innerHeight / 2)));
+        cab.style.setProperty("--mx", (dx * 16).toFixed(1) + "px");
+        cab.style.setProperty("--my", (dy * 10).toFixed(1) + "px");
+        cab.style.setProperty("--mr", (dx * 4).toFixed(1) + "deg");
+        cab.style.setProperty("--ry", (dx * 22).toFixed(1) + "deg");
+        cab.style.setProperty("--rx", (-dy * 12).toFixed(1) + "deg");
+      });
+    }, { passive: true });
+    // En táctil no hay cursor: un toque lo despierta, y al llegar abre los ojos una vez.
+    masc.addEventListener("pointerdown", () => despertar(3000));
+    if (matchMedia("(hover: none)").matches) setTimeout(() => despertar(2400), 1400);
+  }
+
+  // --- CORTAR: el CSS decide qué pasa, el JS solo marca cuándo ---
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add("dentro"); io.unobserve(e.target); }
+  }), { threshold: .3 });
+  document.querySelectorAll(".cortar").forEach((el) => io.observe(el));
+
+  // --- MARCAR: cifras que cuentan una sola vez ---
+  const fmt = (n, el) => (el.dataset.mas !== undefined ? "+" : "") + n.toLocaleString("es") + (el.dataset.sufijo || "");
+  const contar = (el) => {
+    const fin = +el.dataset.contar;
+    if (quieto) { el.textContent = fmt(fin, el); return; }
+    const t0 = performance.now(), dur = 1100;
+    const paso = (t) => {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(fin * e), el);
+      if (p < 1) requestAnimationFrame(paso);
+    };
+    requestAnimationFrame(paso);
+  };
+  const ioC = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { contar(e.target); ioC.unobserve(e.target); }
+  }), { threshold: .6 });
+  document.querySelectorAll("[data-contar]").forEach((el) => ioC.observe(el));
+
+  // --- Filtros ---
+  const piezas = [...document.querySelectorAll(".pieza")];
+  const botones = document.querySelectorAll("[data-filtro]");
+  botones.forEach((b) => {
+    const f = b.dataset.filtro;
+    const n = f === "todo" ? piezas.length : piezas.filter((p) => p.dataset.cat === f).length;
+    b.insertAdjacentHTML("beforeend", `<sup>${n}</sup>`);
+    b.addEventListener("click", () => {
+      botones.forEach((x) => x.setAttribute("aria-pressed", x === b));
+      piezas.forEach((p) => (p.hidden = !(f === "todo" || p.dataset.cat === f)));
+    });
+  });
+
+  // --- Visor ---
+  const dlg = document.getElementById("visor");
+  let actual = 0;
+  const visibles = () => piezas.filter((p) => !p.hidden);
+  const mostrar = (p) => {
+    const lista = visibles(); actual = lista.indexOf(p);
+    const img = new Image();
+    img.src = p.querySelector("button").dataset.full;
+    img.alt = p.querySelector("img").alt;
+    document.getElementById("v-img").replaceChildren(img);
+    document.getElementById("v-cat").textContent = p.querySelector(".rotulo").textContent;
+    document.getElementById("v-titulo").textContent = p.querySelector("strong").textContent;
+    document.getElementById("v-desc").textContent = p.querySelector("button").dataset.desc || "";
+    document.getElementById("v-cuenta").textContent =
+      String(actual + 1).padStart(2, "0") + " / " + String(lista.length).padStart(2, "0");
+  };
+  const mover = (d) => { const l = visibles(); mostrar(l[(actual + d + l.length) % l.length]); };
+  piezas.forEach((p) => p.querySelector("button").addEventListener("click", () => { mostrar(p); dlg.showModal(); }));
+  dlg.addEventListener("click", (e) => {
+    if (e.target.closest("[data-cerrar]") || e.target === dlg || e.target.classList.contains("visor__img")) dlg.close();
+    const s = e.target.closest("[data-paso]"); if (s) mover(+s.dataset.paso);
+  });
+  dlg.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") mover(1);
+    if (e.key === "ArrowLeft") mover(-1);
+  });
+  // --- Vestuario: una sola camiseta activa ---
+  const rack = document.getElementById("rack");
+  const perchas = [...rack.querySelectorAll(".camiseta")];
+  const activar = (li) => {
+    if (li.classList.contains("activa")) return;
+    perchas.forEach((x) => x.classList.toggle("activa", x === li));
+    document.getElementById("vest-n").textContent =
+      String(perchas.indexOf(li) + 1).padStart(2, "0") + " / " + String(perchas.length).padStart(2, "0");
+    document.getElementById("vest-t").textContent = li.dataset.t;
+    document.getElementById("vest-c").textContent = li.dataset.c;
+  };
+  perchas.forEach((li) => {
+    li.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") activar(li); });
+    li.querySelector("button").addEventListener("focus", () => activar(li));
+    li.querySelector("button").addEventListener("click", () => {
+      // Abre la propuesta completa (frente + espalda) desde la Temporada, con el filtro en «Todo».
+      document.querySelector('[data-filtro="todo"]').click();
+      const p = piezas.find((x) => x.dataset.id === li.dataset.id);
+      if (p) { mostrar(p); dlg.showModal(); }
+    });
+  });
+  // En táctil el rack se desliza: manda la camiseta cuyo centro está más cerca del centro.
+  // Un solo índice activo, imposible que haya dos (ver FRONTEND-GUIDE §6).
+  let pedidoR = false;
+  const centrar = () => {
+    pedidoR = false;
+    const c = rack.getBoundingClientRect(); const mid = c.left + c.width / 2;
+    let mejor = perchas[0], d = Infinity;
+    for (const li of perchas) {
+      const r = li.getBoundingClientRect(); const dd = Math.abs(r.left + r.width / 2 - mid);
+      if (dd < d) { d = dd; mejor = li; }
+    }
+    activar(mejor);
+  };
+  rack.addEventListener("scroll", () => { if (!pedidoR) { pedidoR = true; requestAnimationFrame(centrar); } }, { passive: true });
+  const medio = perchas[Math.floor(perchas.length / 2) - 1];
+  activar(medio);
+  if (rack.scrollWidth > rack.clientWidth) rack.scrollLeft = medio.offsetLeft - (rack.clientWidth - medio.offsetWidth) / 2;
+
+  // --- Parallax de la cabeza al bajar + chispas extra en el fondo ---
+  if (!quieto) {
+    let pedidoS = false;
+    addEventListener("scroll", () => {
+      if (pedidoS) return; pedidoS = true;
+      requestAnimationFrame(() => { pedidoS = false;
+        masc.style.setProperty("--sy", (Math.min(scrollY, innerHeight) * -0.15).toFixed(1) + "px"); });
+    }, { passive: true });
+    const amb = document.querySelector(".ambiente");
+    const colores = ["var(--pink)", "var(--pink)", "var(--accent)", "var(--pink-2)", "#fff"];
+    for (let i = 0; i < 30; i++) {
+      const c = document.createElement("span");
+      c.className = "chispa";
+      c.style.cssText = `--x:${(Math.random() * 100).toFixed(1)}%;--d:${(9 + Math.random() * 14).toFixed(1)}s;--r:-${(Math.random() * 20).toFixed(1)}s;--t:${(2 + Math.random() * 5).toFixed(1)}px;--w:${(Math.random() * 120 - 60).toFixed(0)}px;--c:${colores[i % colores.length]}`;
+      amb.insertBefore(c, amb.querySelector(".grano"));
+    }
+  }
+
+  // --- Pasos: se encienden en orden y la pista de luz avanza ---
+  const pasosEl = document.getElementById("pasos");
+  const pasos = [...pasosEl.querySelectorAll(".paso")];
+  const encender = (li) => {
+    li.classList.add("encendido");
+    pasosEl.style.setProperty("--avance", pasos.filter((x) => x.classList.contains("encendido")).length / pasos.length);
+  };
+  if (quieto) pasos.forEach(encender);
+  else {
+    const ioP = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const i = pasos.indexOf(e.target);
+      setTimeout(() => encender(e.target), i * 220);
+      ioP.unobserve(e.target);
+    }), { threshold: .35 });
+    pasos.forEach((li) => ioP.observe(li));
+  }
+
+  // --- Botón lateral: se invierte sobre el bloque rosa ---
+  const lat = document.querySelector(".lateral");
+  new IntersectionObserver(([e]) => lat.classList.toggle("invertido", e.isIntersecting),
+    { rootMargin: "-50% 0px -50% 0px" }).observe(document.getElementById("fichaje"));
+
+  // --- Galería: filas que corren + diálogo con todo ---
+  // Las filas se arman desde las piezas del diálogo: una sola fuente de verdad.
+  const gal = document.getElementById("galeria");
+  document.getElementById("total-g").textContent = piezas.length;
+  const carr = document.getElementById("carrusel");
+  const FILAS = 3, POR_FILA = 12;
+  const elegidas = piezas.slice(0, FILAS * POR_FILA);
+  for (let f = 0; f < FILAS; f++) {
+    const fila = document.createElement("div");
+    fila.className = "fila" + (f % 2 ? " reves" : "");
+    fila.style.setProperty("--dur", (90 + f * 18) + "s");
+    const pista = document.createElement("div");
+    pista.className = "fila__pista";
+    const grupo = elegidas.filter((_, i) => i % FILAS === f);
+    // Dos vueltas del mismo grupo: la pista se desplaza -50% y empalma sin salto.
+    [...grupo, ...grupo].forEach((p, k) => {
+      const t = document.createElement("button");
+      t.type = "button"; t.className = "tile";
+      t.dataset.t = p.querySelector("strong").textContent;
+      t.dataset.id = p.dataset.id;
+      if (k >= grupo.length) { t.tabIndex = -1; t.setAttribute("aria-hidden", "true"); }
+      else t.setAttribute("aria-label", "Ver " + t.dataset.t);
+      const img = new Image();
+      img.src = p.querySelector("img").src.replace("-t.webp", "-m.webp");
+      img.alt = ""; img.loading = "lazy"; img.decoding = "async";
+      t.append(img);
+      t.addEventListener("click", () => {
+        document.querySelector('[data-filtro="todo"]').click();
+        mostrar(p); dlg.showModal();
+      });
+      pista.append(t);
+    });
+    fila.append(pista); carr.append(fila);
+  }
+  document.getElementById("abrir-galeria").addEventListener("click", () => { gal.showModal(); gal.scrollTop = 0; });
+  gal.addEventListener("click", (e) => { if (e.target.closest("[data-cerrar-g]")) gal.close(); });
+
+  // Deslizar en el móvil para pasar de pieza
+  let x0 = null;
+  dlg.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  dlg.addEventListener("touchend", (e) => {
+    if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 50) mover(dx < 0 ? 1 : -1);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
